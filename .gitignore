@@ -1,0 +1,17 @@
+# Python bytecode
+__pycache__/
+
+# Virtual Environment
+rmenv/
+
+# Editor-specific settings
+.vscode/
+
+# User-uploaded files
+uploads/
+
+# Environment variables (if you use them)
+.env
+
+# Log files (good practice)
+*.log

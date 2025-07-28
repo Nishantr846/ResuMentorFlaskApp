@@ -1,0 +1,82 @@
+[
+  {
+    "title": "DevOps Engineer",
+    "skills": [
+      "Docker",
+      "Kubernetes",
+      "CI/CD"
+    ]
+  },
+  {
+    "title": "Cloud Architect",
+    "skills": [
+      "AWS",
+      "Terraform",
+      "Cloud Security"
+    ]
+  },
+  {
+    "title": "Frontend Developer",
+    "skills": [
+      "React",
+      "JavaScript",
+      "CSS"
+    ]
+  },
+  {
+    "title": "Backend Developer",
+    "skills": [
+      "Node.js",
+      "Express",
+      "Databases"
+    ]
+  },
+  {
+    "title": "Cybersecurity Analyst",
+    "skills": [
+      "Network Security",
+      "Penetration Testing",
+      "SIEM"
+    ]
+  },
+  {
+    "title": "AI Researcher",
+    "skills": [
+      "Deep Learning",
+      "PyTorch",
+      "Mathematics"
+    ]
+  },
+  {
+    "title": "Mobile App Developer",
+    "skills": [
+      "Flutter",
+      "Dart",
+      "Firebase"
+    ]
+  },
+  {
+    "title": "Product Manager",
+    "skills": [
+      "Agile",
+      "Roadmapping",
+      "Stakeholder Management"
+    ]
+  },
+  {
+    "title": "UX Designer",
+    "skills": [
+      "Figma",
+      "User Research",
+      "Wireframing"
+    ]
+  },
+  {
+    "title": "Business Analyst",
+    "skills": [
+      "Requirement Gathering",
+      "Data Analysis",
+      "Stakeholder Communication"
+    ]
+  }
+]
