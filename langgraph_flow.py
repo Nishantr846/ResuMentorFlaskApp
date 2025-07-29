@@ -6,7 +6,10 @@ from llm import call_llm
 # Load environment variables
 load_dotenv()
 
-def run_career_coach_flow(resume_text):
+def run_career_coach_flow(resume_text, tech_count=5, behavioral_count=5, design_count=2):
+    """
+    Analyzes a resume and generates feedback, job matches, and a custom number of interview questions.
+    """
     # Load sample job data
     try:
         with open('sample_jobs.json', 'r') as f:
@@ -25,16 +28,23 @@ def run_career_coach_flow(resume_text):
     except FileNotFoundError as e:
         return f"Error loading prompt file: {e}. Make sure all prompt files are inside the 'prompt_templates' folder."
 
+    # Populate prompts with data
     feedback_prompt = feedback_template.replace("{{resume}}", resume_text)
     job_matching_prompt = job_match_template.replace("{{resume}}", resume_text)
+    
+    # MODIFIED: Insert the custom question counts into the interview prompt
     interview_prompt = interview_template.replace("{{resume}}", resume_text)
+    interview_prompt = interview_prompt.replace("{{tech_count}}", str(tech_count))
+    interview_prompt = interview_prompt.replace("{{behavioral_count}}", str(behavioral_count))
+    interview_prompt = interview_prompt.replace("{{design_count}}", str(design_count))
+
 
     # Get responses from LLM
     resume_feedback = call_llm(feedback_prompt)
     job_recommendations = call_llm(job_matching_prompt)
     interview_questions = call_llm(interview_prompt)
 
-    # Combine into a single string for parsing
+    # Combine into a single string for the frontend to parse
     formatted_output = f"""
 📝 Resume Feedback
 {resume_feedback}
@@ -47,62 +57,14 @@ def run_career_coach_flow(resume_text):
 """
     return formatted_output
 
-# --- NEW FUNCTION FOR RESUME BUILDER ---
-def run_resume_builder_flow(form_data):
-    """
-    Processes resume form data, enhances experience descriptions using an LLM,
-    and assembles the final resume text.
-    """
-    try:
-        # MODIFIED: Path updated to look inside prompt_templates
-        with open('prompt_templates/resume_builder_prompt.txt', 'r') as f:
-            builder_prompt_template = f.read()
-    except Exception as e:
-        return f"Error: Could not load resume_builder_prompt.txt: {str(e)}"
+# --- The run_resume_builder_flow function has been removed ---
 
-    # Basic resume structure
-    resume_parts = []
-    resume_parts.append(f"# {form_data.get('full_name', '')}")
-    resume_parts.append(f"{form_data.get('email', '')} | {form_data.get('phone', '')} | {form_data.get('linkedin', '')}\n")
-    resume_parts.append("## Work Experience")
-
-    # Loop through all experience entries from the form
-    i = 1
-    while True:
-        title = form_data.get(f'experience_title_{i}')
-        if not title: # Stop when we run out of experience entries
-            break
-
-        company = form_data.get(f'experience_company_{i}')
-        dates = form_data.get(f'experience_dates_{i}')
-        description = form_data.get(f'experience_desc_{i}')
-
-        if company and description:
-            prompt = builder_prompt_template.replace("{{job_title}}", title)
-            prompt = prompt.replace("{{company}}", company)
-            prompt = prompt.replace("{{description}}", description)
-
-            enhanced_description = call_llm(prompt)
-
-            resume_parts.append(f"\n**{title}** | {company} | {dates}")
-            resume_parts.append(enhanced_description)
-        i += 1
-        
-    # Add other sections from form data
-    resume_parts.append("\n## Education")
-    resume_parts.append(f"{form_data.get('education_degree_1', '')}\n{form_data.get('education_school_1', '')} | {form_data.get('education_dates_1', '')}")
-    resume_parts.append("\n## Skills")
-    resume_parts.append(f"{form_data.get('skills', '')}")
-
-    return "\n\n".join(resume_parts)
-
-# --- NEW FUNCTION FOR COVER LETTER BUILDER ---
+# --- Cover Letter Builder Function ---
 def run_cover_letter_builder_flow(resume_text, job_description_text):
     """
     Generates a tailored cover letter using a resume and job description.
     """
     try:
-        # MODIFIED: Path updated to look inside prompt_templates
         with open('prompt_templates/cover_letter_prompt.txt', 'r') as f:
             cover_letter_template = f.read()
     except Exception as e:

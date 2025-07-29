@@ -7,7 +7,7 @@ from flask import Flask, render_template, request, jsonify
 from resume_parser import extract_text_from_pdf
 from langgraph_flow import (
     run_career_coach_flow,
-    run_resume_builder_flow,
+    # run_resume_builder_flow has been removed
     run_cover_letter_builder_flow
 )
 
@@ -82,7 +82,6 @@ def format_jobs_html(text):
     if not text:
         return "<p>No job matches available.</p>"
 
-    # Split the text into blocks for each job recommendation
     job_blocks = re.split(r'\n\d+\.\s*Role Recommendation', text, flags=re.IGNORECASE)
     
     html = '<div class="space-y-6 text-gray-800 text-left">'
@@ -91,18 +90,15 @@ def format_jobs_html(text):
         if not block.strip():
             continue
         
-        # The first line is the job title
         lines = block.strip().split('\n')
         title = lines[0].strip()
         
         html += f'<div><h3 class="text-lg font-bold text-blue-700 mb-2">{title}</h3>'
         html += '<ul class="list-disc list-inside ml-4 space-y-1">'
         
-        # Process the rest of the lines as bullet points
         for line in lines[1:]:
             line = line.strip().lstrip('- ')
             if line:
-                # Make subheadings like "Justification" bold
                 if ':' in line:
                     parts = line.split(':', 1)
                     html += f'<li><strong>{parts[0]}:</strong>{parts[1]}</li>'
@@ -114,27 +110,22 @@ def format_jobs_html(text):
     html += '</div>'
     return html
 
-
 def format_interview_html(text):
     """
     Formats the interview questions into a structured HTML list with subheadings.
-    This version is more robust to handle cases where the first question is on the same line as the header.
     """
     if not text:
         return "<p>No interview prep available.</p>"
 
     html = '<div class="space-y-8 text-gray-800 text-left">'
     
-    # Split the entire text into sections based on the '###' delimiter
-    # This will create a list where each item is a block of text for a question category
     sections = [s.strip() for s in text.split('###') if s.strip()]
 
     for section_text in sections:
-        # Find where the first question number (e.g., "1.") appears to separate the title from the questions
         match = re.search(r'\d+\.', section_text)
         
         if not match:
-            continue # Skip this block if it doesn't contain a numbered list
+            continue
 
         title_end_index = match.start()
         title = section_text[:title_end_index].strip()
@@ -146,7 +137,6 @@ def format_interview_html(text):
         html += f'<div><h3 class="text-xl font-bold text-blue-700 mb-4">{title}</h3>'
         html += '<ol class="list-decimal pl-5 space-y-4 text-gray-700">'
         
-        # Split the remaining text into individual questions
         questions = [q.strip() for q in re.split(r'\d+\.\s*', questions_text) if q.strip()]
         
         for question in questions:
@@ -154,27 +144,16 @@ def format_interview_html(text):
         
         html += '</ol></div>'
         
-    html += '</div>'
-    
-    # If, after all that, no sections were parsed, return a fallback message
     if '<div>' not in html:
         return '<p class="text-gray-500 text-left">Could not parse interview questions from the AI response.</p>'
 
     return html
-#======================================================================
-# --- END OF THE UPDATED FUNCTION ---
-#======================================================================
-
 
 # --- ROUTES FOR SERVING HTML PAGES ---
 
 @app.route('/')
 def home():
     return render_template('index.html')
-
-@app.route('/resume_builder')
-def resume_builder():
-    return render_template('resume_builder.html')
 
 @app.route('/cover_letter_builder')
 def cover_letter_builder():
@@ -202,7 +181,18 @@ def upload_resume():
     try:
         resume_text = extract_text_from_pdf(filepath)
         
-        raw_llm_output = run_career_coach_flow(resume_text)
+        # ADDED: Get question counts from the form data, with default values
+        tech_count = request.form.get('tech_count', 5)
+        behavioral_count = request.form.get('behavioral_count', 5)
+        design_count = request.form.get('design_count', 2)
+        
+        # MODIFIED: Pass the counts to the career coach flow
+        raw_llm_output = run_career_coach_flow(
+            resume_text, 
+            tech_count=tech_count, 
+            behavioral_count=behavioral_count, 
+            design_count=design_count
+        )
 
         parsed_sections = parse_llm_output(raw_llm_output)
         
@@ -214,16 +204,6 @@ def upload_resume():
 
         return jsonify({'success': True, 'message': 'Resume analyzed successfully!', 'results': results})
         
-    except Exception as e:
-        traceback.print_exc()
-        return jsonify({'success': False, 'message': f'An error occurred: {str(e)}'})
-
-@app.route('/build_resume', methods=['POST'])
-def build_resume_route():
-    try:
-        form_data = request.form.to_dict()
-        generated_resume_text = run_resume_builder_flow(form_data)
-        return jsonify({'success': True, 'resume_text': generated_resume_text})
     except Exception as e:
         traceback.print_exc()
         return jsonify({'success': False, 'message': f'An error occurred: {str(e)}'})

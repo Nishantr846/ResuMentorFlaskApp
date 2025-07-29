@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyze Your Resume - ResuMentor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/analysis.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="/" class="logo">ResuMentor</a>
+            <ul>
+                <li><a href="/#features">Features</a></li>
+                <li><a href="/cover_letter_builder">Cover Letter Builder</a></li>
+                <li><a href="/#how-it-works">How It Works</a></li>
+                <li><a href="/#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="analysis-main">
+        <section id="upload-section" class="upload-container">
+            <h1>Upload Your Resume to Begin</h1>
+            <p>Get instant, data-driven feedback on your resume's strengths and weaknesses.</p>
+            <div class="drop-zone" id="drop-zone">
+                <div id="upload-prompt">
+                    <img src="https://img.icons8.com/plasticine/100/upload-to-cloud.png" alt="Upload Icon"
+                        class="upload-icon">
+                    <p>Drag & Drop Your Resume Here</p>
+                    <p class="small-text">or</p>
+                    <input type="file" id="resume-upload" accept=".pdf,.doc,.docx" hidden>
+                    <label for="resume-upload" class="browse-button">Browse Files</label>
+                    <p class="file-info">Supports: PDF, DOCX</p>
+                </div>
+
+                <div id="file-display" style="display: none;">
+                    <img src="https://img.icons8.com/plasticine/100/document.png" alt="Document Icon"
+                        class="upload-icon">
+                    <p id="file-name-display" class="file-name"></p>
+                    
+                    <div id="question-options-container">
+                        <p class="small-text">Customize interview questions:</p>
+                        <div class="question-options">
+                            <div class="option">
+                                <label for="tech-questions">Technical</label>
+                                <input type="number" id="tech-questions" value="5" min="1" max="10">
+                            </div>
+                            <div class="option">
+                                <label for="behavioral-questions">Behavioral</label>
+                                <input type="number" id="behavioral-questions" value="5" min="1" max="10">
+                            </div>
+                            <div class="option">
+                                <label for="design-questions">System Design</label>
+                                <input type="number" id="design-questions" value="2" min="0" max="5">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="analyze-button" class="cta-button" style="display: none;">Analyze Now</button>
+        </section>
+
+        <section id="loading-section" class="loading-container" style="display: none;">
+            <div class="spinner"></div>
+            <h2>Analyzing Your Resume...</h2>
+            <p>Our AI is reviewing your skills, experience, and formatting.</p>
+        </section>
+
+        <section id="results-section" style="display: none;">
+            </section>
+    </main>
+
+    <script src="/static/analysis.js"></script>
+</body>
+
+</html>

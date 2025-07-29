@@ -1,25 +1,21 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // --- Element selection (no changes) ---
     const uploadSection = document.getElementById('upload-section');
     const loadingSection = document.getElementById('loading-section');
     const resultsSection = document.getElementById('results-section');
     const fileInput = document.getElementById('resume-upload');
     const dropZone = document.getElementById('drop-zone');
-    
-    // Get the new elements
     const uploadPrompt = document.getElementById('upload-prompt');
     const fileDisplay = document.getElementById('file-display');
     const fileNameDisplay = document.getElementById('file-name-display');
     const analyzeButton = document.getElementById('analyze-button');
 
-    let selectedFile = null; // Variable to store the selected file
+    let selectedFile = null;
 
-    // --- FILE SELECTION AND DISPLAY LOGIC ---
-
+    // --- File selection logic (no changes) ---
     const handleFileSelect = (file) => {
         if (!file) return;
-        selectedFile = file; // Store the file
-        
-        // Update the UI
+        selectedFile = file;
         uploadPrompt.style.display = 'none';
         fileNameDisplay.textContent = file.name;
         fileDisplay.style.display = 'block';
@@ -27,12 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     fileInput.addEventListener('change', (e) => handleFileSelect(e.target.files[0]));
-    
-    // Drag and drop events
-    dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.classList.add('dragover');
-    });
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
     dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
     dropZone.addEventListener('drop', (e) => {
         e.preventDefault();
@@ -40,8 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
         handleFileSelect(e.dataTransfer.files[0]);
     });
 
-    // --- BACKEND COMMUNICATION ON BUTTON CLICK ---
-
+    // --- MODIFIED: Backend communication on button click ---
     analyzeButton.addEventListener('click', () => {
         if (selectedFile) {
             handleFileUpload(selectedFile);
@@ -51,25 +41,25 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     async function handleFileUpload(file) {
-        // 1. Show loading spinner
         uploadSection.style.display = 'none';
         loadingSection.style.display = 'block';
         resultsSection.style.display = 'none';
 
-        // 2. Prepare file for sending
         const formData = new FormData();
         formData.append('resume', file);
+        
+        // ADDED: Append question counts to the form data
+        formData.append('tech_count', document.getElementById('tech-questions').value);
+        formData.append('behavioral_count', document.getElementById('behavioral-questions').value);
+        formData.append('design_count', document.getElementById('design-questions').value);
 
         try {
-            // 3. Send file to Flask backend
             const response = await fetch('/upload_resume', {
                 method: 'POST',
                 body: formData
             });
-
             const data = await response.json();
             
-            // 4. Hide loader and display results
             loadingSection.style.display = 'none';
             if (data.success) {
                 displayResults(data.results);

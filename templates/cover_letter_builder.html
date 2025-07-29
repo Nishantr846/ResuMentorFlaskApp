@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cover Letter Builder - ResuMentor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/builder.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <a href="/" class="logo">ResuMentor</a>
+            <ul>
+                <li><a href="/#features">Features</a></li>
+                <li><a href="/#how-it-works">How It Works</a></li>
+                <li><a href="/cover_letter_builder">Cover Letter Builder</a></li>
+                <li><a href="/#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="builder-main">
+        <div class="builder-container">
+            <h1>Generate a Custom Cover Letter</h1>
+            <p>Paste a job description and upload your resume to create a tailored cover letter in seconds.</p>
+
+            <div class="cover-letter-layout">
+                <div class="input-column">
+                    <h3>Job Description</h3>
+                    <textarea id="job-description" placeholder="Paste the full job description here..."></textarea>
+
+                    <h3>Your Resume</h3>
+                    <div class="upload-box" id="upload-box">
+                        <div id="upload-prompt-cl">
+                            <p>Upload your resume to provide context.</p>
+                            <input type="file" id="resume-upload" hidden>
+                            <label for="resume-upload" class="browse-button">Browse File</label>
+                        </div>
+                        <div id="file-display-cl" style="display: none;">
+                            <img src="https://img.icons8.com/plasticine/100/document.png" alt="Document Icon"
+                                class="upload-icon">
+                            <p id="file-name-display-cl" class="file-name"></p>
+                        </div>
+                    </div>
+                    <button class="builder-button primary" id="generate-letter-btn">Generate Cover Letter</button>
+                </div>
+
+                <div class="output-column">
+                    <h3>Generated Cover Letter</h3>
+                    <div id="letter-output" class="letter-output-placeholder">
+                        Your generated cover letter will appear here...
+                    </div>
+                    <div id="output-actions" style="display:none;">
+                        <button id="copy-btn" class="builder-button primary">Copy to Clipboard</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/cover_letter_builder.js"></script>
+
+</body>
+
+</html>
