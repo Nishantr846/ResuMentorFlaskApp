@@ -7,6 +7,7 @@
     <title>Analyze Your Resume - ResuMentor</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/analysis.css">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
 </head>
 
 <body>
@@ -41,7 +42,7 @@
                     <img src="https://img.icons8.com/plasticine/100/document.png" alt="Document Icon"
                         class="upload-icon">
                     <p id="file-name-display" class="file-name"></p>
-                    
+
                     <div id="question-options-container">
                         <p class="small-text">Customize interview questions:</p>
                         <div class="question-options">
@@ -71,7 +72,7 @@
         </section>
 
         <section id="results-section" style="display: none;">
-            </section>
+        </section>
     </main>
 
     <script src="/static/analysis.js"></script>

@@ -1,37 +1,46 @@
-# ResuMentor: AI-Powered Resume Co-Pilot
+# ResuMentor: AI-Powered Career Coach
 
-ResuMentor is a comprehensive, AI-driven career development platform built with Flask and powered by a local Large Language Model (LLM) using Ollama. It is designed to streamline and personalize the job preparation process by providing resume analysis and cover letter generation.
+ResuMentor is a full-stack web application designed to automate and personalize the job application process. It leverages a cloud-based Large Language Model to provide users with instant resume analysis and tailored cover letter generation, helping them become more competitive in the job market.
+
+**Live Demo:** https://resumentor.onrender.com/
 
 ---
-
 ## 🎯 Key Features
 
-* **AI Resume Analyzer**: Upload a resume in PDF format to receive instant, detailed feedback. The analysis covers:
-    * Content, structure, and formatting improvements.
-    * AI-powered job role recommendations based on your experience.
-    * A custom number of technical, behavioral, and system design interview questions tailored to your profile.
-* **AI Cover Letter Builder**: Paste a job description and upload your resume to generate a personalized and professional cover letter that bridges your experience with the employer's needs.
+* **AI Resume Analyzer**:
+    * Users can upload their resume in PDF format.
+    * The application provides a comprehensive analysis covering:
+        * **Resume Feedback**: Constructive criticism on structure, formatting, and content.
+        * **Job Matches**: AI-powered recommendations for suitable job roles based on the resume's content.
+        * **Interview Preparation**: A customized list of technical, behavioral, and system design questions tailored to the user's profile.
+    * Includes a minimalist UI for users to select the exact number of interview questions they want to be generated.
+
+* **AI Cover Letter Builder**:
+    * Users can paste a job description and upload their resume.
+    * The AI synthesizes both documents to generate a unique, professional cover letter that highlights the candidate's relevant skills and experience for that specific role.
+
+* **Dynamic & Responsive Frontend**:
+    * A clean, multi-page user interface built with HTML, CSS, and vanilla JavaScript.
+    * Features include dynamic form fields, full-screen modal previews, and asynchronous communication with the backend to display results without reloading the page.
 
 ---
-
 ## 🛠️ Tech Stack
 
 * **Backend**: Python, Flask
-* **AI/ML**: Ollama (running the Mistral model), LangChain
+* **AI & Machine Learning**: Google Gemini API, LangChain
 * **Frontend**: HTML5, CSS3, JavaScript
-* **Python Libraries**: `python-docx`, `pdfplumber`, `python-dotenv`
+* **Key Python Libraries**: `google-generativeai`, `pdfplumber`, `python-docx`
+* **Deployment**: Render, Gunicorn
 
 ---
-
 ## 🚀 Setup and Installation
 
 Follow these steps to get the project running on your local machine.
 
 ### Prerequisites
-
-* Python 3.10+
-* Conda (or another virtual environment manager)
-* [Ollama](https://ollama.com/) installed and running.
+* Python (3.10+)
+* Conda for environment management
+* A Google Gemini API Key
 
 ### Installation
 
@@ -52,18 +61,21 @@ Follow these steps to get the project running on your local machine.
     pip install -r requirements.txt
     ```
 
-4.  **Download the AI Model:**
-    Make sure Ollama is running, and then pull the `mistral` model. This is a one-time download.
-    ```bash
-    ollama pull mistral
-    ```
+4.  **Set up your Environment Variable:**
+    * Create a new file in the root directory named `.env`.
+    * Add your Google API key to this file:
+        ```
+        GOOGLE_API_KEY="YOUR_API_KEY_HERE"
+        ```
 
 ### Running the Application
 
 1.  Ensure your Conda environment is activated (`conda activate rmenv`).
-2.  Ensure the Ollama application is running in the background.
-3.  Start the Flask server:
+2.  Start the Flask server:
     ```bash
     flask run
     ```
-4.  Open your web browser and navigate to `http://127.0.0.1:5000`.
+3.  Open your web browser and navigate to `http://127.0.0.1:5000`.
+
+---
+## 📁 Project Structure
