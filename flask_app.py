@@ -46,68 +46,92 @@ def parse_llm_output(raw_text):
 
 def format_feedback_html(text):
     """
-    Formats the resume feedback text into structured HTML.
+    Formats the detailed resume feedback text into structured HTML with sections and lists.
     """
-    if not text:
-        return "<p>No resume feedback available.</p>"
-        
-    points = re.split(r'\n\d+\.\s', text)
     html = '<div class="space-y-6 text-gray-800 text-left">'
     
-    for point in points:
-        if not point.strip():
-            continue
+    # Split the text into major sections (e.g., ATS Score, Overall Structure, etc.)
+    sections = re.split(r'\n\*\*(\d\.\s.*?):\*\*', text)
+    
+    # The first part is usually empty or an intro, we skip it
+    for i in range(1, len(sections), 2):
+        title = sections[i].strip()
+        content = sections[i+1].strip()
         
-        lines = point.strip().split('\n')
-        title = lines[0]
-        html += f'<div><h3 class="text-lg font-semibold text-blue-600 mb-2">{title}</h3><ul class="list-disc list-inside ml-4 space-y-1">'
+        html += f'<div class="feedback-section"><h3 class="text-lg font-bold text-blue-700 mb-3">{title}</h3>'
         
-        for line in lines[1:]:
-            line = line.strip().lstrip('- ').replace("Suggestions:", "<strong>Suggestions:</strong>")
-            html += f'<li>{line}</li>'
-        
-        html += '</ul></div>'
-        
-    if "Overall," in text:
-        overall_summary = text.split("Overall,")[1].strip()
-        html += f'<div class="border-t pt-4 mt-6"><p class="font-semibold text-gray-900"><strong>Overall:</strong> {overall_summary}</p></div>'
+        # Process subsections like Strengths, Areas for Improvement
+        subsections = re.split(r'\n\*\s*\*\*(.*?):\*\*', content)
+        if len(subsections) > 1:
+            for j in range(1, len(subsections), 2):
+                sub_title = subsections[j].strip()
+                sub_content = subsections[j+1].strip()
+                html += f'<h4 class="font-semibold text-gray-800 mt-4 mb-2">{sub_title}</h4>'
+                html += '<ul class="list-disc list-inside ml-4 space-y-1">'
+                for item in sub_content.split('\n'):
+                    if item.strip():
+                        html += f'<li>{item.strip().lstrip("* ")}</li>'
+                html += '</ul>'
+        else:
+            # If no subsections, just list the points
+            html += '<ul class="list-disc list-inside ml-4 space-y-1">'
+            for item in content.split('\n'):
+                if item.strip():
+                    html += f'<li>{item.strip().lstrip("* ")}</li>'
+            html += '</ul>'
+            
+        html += '</div>'
         
     html += '</div>'
     return html
 
 def format_jobs_html(text):
     """
-    Formats the job matches text into a clean, simple HTML list.
+    Formats the job matches text into a clean, single-column HTML layout,
+    robustly separating titles from descriptions.
     """
     if not text:
         return "<p>No job matches available.</p>"
 
-    job_blocks = re.split(r'\n\d+\.\s*Role Recommendation', text, flags=re.IGNORECASE)
+    html = '<div class="space-y-8 text-gray-800 text-left">'
     
-    html = '<div class="space-y-6 text-gray-800 text-left">'
+    # MODIFIED: Corrected the regular expression to fix the "multiple repeat" error
+    # This pattern now looks for a number, a period, "Role Recommendation", and a colon.
+    job_blocks = re.split(r'\d\.\s*Role Recommendation:', text, flags=re.IGNORECASE)
 
     for block in job_blocks:
         if not block.strip():
             continue
-        
+            
         lines = block.strip().split('\n')
         title = lines[0].strip()
+        description = " ".join(lines[1:]).strip()
         
-        html += f'<div><h3 class="text-lg font-bold text-blue-700 mb-2">{title}</h3>'
-        html += '<ul class="list-disc list-inside ml-4 space-y-1">'
+        # Each job is a section with a bottom border
+        html += f'<div class="pb-6 border-b border-gray-200">'
+        html += f'<h3 class="text-xl font-bold text-blue-700 mb-3">{title}</h3>'
         
-        for line in lines[1:]:
-            line = line.strip().lstrip('- ')
-            if line:
-                if ':' in line:
-                    parts = line.split(':', 1)
-                    html += f'<li><strong>{parts[0]}:</strong>{parts[1]}</li>'
-                else:
-                    html += f'<li>{line}</li>'
-        
-        html += '</ul></div>'
+        # Add the description if it exists
+        if description:
+             # Find and format subsections like "Justification:"
+            sub_sections = re.split(r'\*\*(.*?):\*\*', description)
+            if len(sub_sections) > 1:
+                for i in range(1, len(sub_sections), 2):
+                    sub_title = sub_sections[i].strip()
+                    sub_content = sub_sections[i+1].strip()
+                    html += f'<h4 class="font-semibold text-gray-800 mt-4 mb-2">{sub_title}</h4><p class="text-gray-700 text-sm">{sub_content}</p>'
+            else:
+                 html += f'<p class="text-gray-700">{description}</p>'
 
-    html += '</div>'
+        html += '</div>' # Close the section
+        
+    # Remove the last border for a cleaner look
+    if html.endswith('</div>'):
+        last_div_pos = html.rfind('<div class="pb-6 border-b border-gray-200">')
+        if last_div_pos != -1:
+            html = html[:last_div_pos] + '<div class="pb-6">' + html[last_div_pos + len('<div class="pb-6 border-b border-gray-200">'):]
+
+    html += '</div>' # Close the container
     return html
 
 def format_interview_html(text):
