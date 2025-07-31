@@ -1,27 +1,21 @@
-from langchain_community.llms import Ollama
-from langchain.callbacks.manager import CallbackManager
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 import os
 from dotenv import load_dotenv
+import google.generativeai as genai
 
+# Load the API key from the .env file
 load_dotenv()
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
-def get_llm():
-    callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
-    
-    llm = Ollama(
-        model="mistral",
-        callback_manager=callback_manager,
-        temperature=0.7,
-        timeout=60
-    )
-    return llm
+# Configure the model
+model = genai.GenerativeModel('gemini-pro')
 
-def call_llm(prompt, system_prompt="You are a helpful AI assistant."):
+def call_llm(prompt):
+    """
+    Calls the Google Gemini API with the given prompt.
+    """
     try:
-        llm = get_llm()
-        formatted_prompt = f"System: {system_prompt}\n\nUser: {prompt}\n\nAssistant:"
-        response = llm.invoke(formatted_prompt)
-        return response.strip()
+        response = model.generate_content(prompt)
+        return response.text.strip()
     except Exception as e:
-        return f"Error calling LLM: {str(e)}"
+        print(f"Error calling Google AI: {e}")
+        return f"Error: The AI model could not be reached. Please check the server logs."
