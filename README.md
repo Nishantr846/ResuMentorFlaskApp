@@ -1,4 +1,4 @@
-# ResuMentor: AI-Powered Career Coach
+# ResuMentor: AI-Powered Career Co-Pilot
 
 ResuMentor is a full-stack web application designed to automate and personalize the job application process. It leverages a cloud-based Large Language Model to provide users with instant resume analysis and tailored cover letter generation, helping them become more competitive in the job market.
 
